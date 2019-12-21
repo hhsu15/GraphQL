@@ -39,6 +39,38 @@ class AuthorType(graphene.ObjectType):
 		return [b for b in books if b['author_id']==author_id]
 
 
+class BookInput(graphene.InputObjectType):
+		book_id = graphene.ID()
+		book_name = graphene.String()
+		genre = graphene.String()
+		author_id = graphene.ID()
+
+
+class AddBook(graphene.Mutation):
+	# define the arguments you need when adding a book (mutation)
+	class Arguments:
+		book_data = BookInput(required=True)
+	
+	# fields for AddBook
+	ok = graphene.Boolean()
+	book = graphene.Field(BookType)
+    
+	@staticmethod
+	def mutate(root, info, book_data=None):
+		ok = True
+		# you can create a BookType Object like this
+		book = BookType(book_id=book_data.book_id, book_name=book_data.book_name, genre=book_data.genre)
+		# update db
+		books.append({'book_id': book_data.book_id, 'book_name': book_data.book_name, 'genre': book_data.genre, 'author_id': book_data.author_id})
+		
+		# you can specify the return value
+		return AddBook(ok=ok, book=book)
+
+
+class Mutation(graphene.ObjectType):
+	# define fields for Mutation
+	add_book = AddBook.Field()
+
 
 class RootQuery(graphene.ObjectType):
 	book = graphene.Field(BookType, book_id=graphene.ID(required=True))
@@ -57,7 +89,7 @@ class RootQuery(graphene.ObjectType):
 
 if __name__ == '__main__':
 
-	schema = graphene.Schema(query=RootQuery)
+	schema = graphene.Schema(query=RootQuery, mutation=Mutation)
 
 	book_query = '''
     	query book {
@@ -106,5 +138,18 @@ if __name__ == '__main__':
 
 	'''
 
-	result = schema.execute(author_query)
+	add_book_mutation = '''
+		mutation addBookMutation {
+			addBook(bookData: {bookId: "4", bookName: "book 4", genre: "science", authorId: "4"}
+			) {
+				book {
+					bookName,
+					bookId
+				}
+			}
+		}
+	'''
+
+	result = schema.execute(add_book_mutation)
 	print(result.data)
+	print(books)
