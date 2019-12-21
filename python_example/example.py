@@ -1,20 +1,23 @@
 import graphene
 
-class Query(graphene.ObjectType):
-	hello = graphene.String(description="hello world")
+class RootQuery(graphene.ObjectType):
+	username = graphene.String(
+		description="the name",
+		name=graphene.String(default_value='stranger'))
 
-	def resolve_hello(self, info):
-		return "world"
+	def resolve_username(root, info, name):
+		print(root)
+		print(info)
+		return f"Hello, {name}!"
 
-schema = graphene.Schema(query=Query)
 
-query = '''
+if __name__ == '__main__':
 
-	query sayHello {
-		hello
-	}
+	schema = graphene.Schema(query=RootQuery)
 
-'''
+	query = '''
+    	query whoIsUser {user}
+	'''
 
-result = schema.execute(query)
-print(result.data)
+	result = schema.execute(query)
+	print(result.data)
