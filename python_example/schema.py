@@ -1,4 +1,5 @@
 import graphene
+from graphene import ID
 
 
 books = [
@@ -87,9 +88,10 @@ class RootQuery(graphene.ObjectType):
 			if author['author_id'] == author_id:
 				return author
 
-if __name__ == '__main__':
 
-	schema = graphene.Schema(query=RootQuery, mutation=Mutation)
+schema = graphene.Schema(query=RootQuery, mutation=Mutation)
+
+if __name__ == '__main__':
 
 	book_query = '''
     	query book {
@@ -149,7 +151,30 @@ if __name__ == '__main__':
 			}
 		}
 	'''
+	# you can also pass variables 
+	variables = {'bookId': '1'}
+	
+	# if you use the variables you have to define it with the typein the query
+	book_query= '''
+    	query getBookIdViaVars ($bookId: ID!) {
+			book(bookId: $bookId) {
+				bookId
+				bookName
+				genre
+				author {
+					authorName
+					age
+				}
+			}
+		
+		}
+	'''
 
-	result = schema.execute(add_book_mutation)
-	print(result.data)
-	print(books)
+
+	result = schema.execute(book_query, variables=variables, operation_name="getBookIdViaVars")
+	
+	if not result.errors:
+		print(result.data)
+	else:
+		print(result.errors)
+	# print(books)
