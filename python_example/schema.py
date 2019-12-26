@@ -18,7 +18,7 @@ authors = [
 
 class BookType(graphene.ObjectType):
 	book_id = graphene.ID(description="book id")
-	book_name = graphene.String(name="bookName", default_value="unknown")
+	book_name = graphene.NonNull(graphene.String(name="bookName", default_value="unknown"))
 	genre = graphene.String()
 	author = graphene.Field(lambda : AuthorType)
 
@@ -31,7 +31,7 @@ class BookType(graphene.ObjectType):
 
 class AuthorType(graphene.ObjectType):
 	author_id = graphene.ID()
-	author_name = graphene.String(name="authorName", default_value="unknown")
+	author_name = graphene.NonNull(graphene.String(name="authorName", default_value="unknown"))
 	age = graphene.Int()
 	books = graphene.List(BookType)
 	
