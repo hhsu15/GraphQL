@@ -80,3 +80,35 @@ mutation{
 }
 ```
 
+## React Client
+Now we use react to create the client
+```
+npm install create-react-app -g
+```
+
+```
+create-react-app client  # for some reason this fails inconsistently..
+```
+### Apollo
+we are using Apollo as client 
+https://www.apollographql.com/docs/react/get-started/
+```
+npm install apollo-boost @apollo/react-hooks graphql apollo-react
+```
+So basically the idea is we use the Aollo client to interact with the graphql endpoint(i.e., make the http request). Here we will have the client making the call to the graphql server. Note that in order to have one local server to call another local server we will need to use cors:
+```
+# in the server folder
+npm install cors --save
+```
+The way apollo-react works is that
+- use ApolloProvider to wrap your components where grahql is needed
+- pass the apollo client(which binds to the endpoint) to the provider
+- in each component where graphql is involved, export the binding component like this
+```
+export default graphql(your_query)(component)
+```
+- then, in the component, you will see the return data in the props, for example:
+```
+console.log(this.props.data.books // books are the root query
+```
+
