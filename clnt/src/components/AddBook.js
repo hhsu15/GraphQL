@@ -1,19 +1,17 @@
 import React, { Component } from 'react';
-import {gql} from 'apollo-boost';
 import {graphql} from 'react-apollo'
-
-const getAuthorQuery = gql`
-	{
-      authors {
-	  	name
-		id
-		age
-	  }
-	}
-`
+import {getAuthorQuery} from '../queries/queries'
 
 
 class AddBook extends Component {
+	constructor(props){
+		super()
+		this.state = {
+			name: "",
+			genre: "",
+			authorId: ""
+		}
+	}
 	displayAuthor(){
 		var data = this.props.data
 		if (data.loading) {
@@ -25,22 +23,28 @@ class AddBook extends Component {
 		}
 	
 	}
+
+	submitForm(e){
+		e.preventDefault(); //this is pure javascript code to prevent the default behavior of submit which refreshes the page
+		console.log(this.state) // since we bind this to the function
+	}
+
 	render() {
 		return (
-			<form id='add-book'>
+			<form id='add-book' onSubmit={this.submitForm.bind(this)}>
 				<div className='field'>
 					<label>Book Name:</label>
-					<input type='text'/>
+					<input type='text' onChange={(e) =>this.setState({name:e.target.value})}/>
 				</div>
 
 				<div className='field'>
 					<label>Genre:</label>
-					<input type='text'/>
+					<input type='text' onChange={(e) =>this.setState({genre:e.target.value})}/>
 				</div>
 
 				<div className='field'>
 					<label>Author:</label>
-					<select>
+					<select onChange={(e) =>this.setState({authorId:e.target.value})}>
 						<option>Select Author</option>
 						{this.displayAuthor()}
 					</select>

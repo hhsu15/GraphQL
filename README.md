@@ -100,12 +100,13 @@ So basically the idea is we use the Aollo client to interact with the graphql en
 # in the server folder
 npm install cors --save
 ```
-The way apollo-react works is that
+The way apollo-react works is like this:
 - use ApolloProvider to wrap your components where grahql is needed
 - pass the apollo client(which binds to the endpoint) to the provider
+- the graphql query will use the 'gql' function imported from apoppo boost with the query string using "`" format
 - in each component where graphql is involved, export the binding component like this
 ```
-export default graphql(your_query)(component)
+export default graphql(your_query)(component_class)
 ```
 - then, in the component, you will see the return data in the props, for example:
 ```
