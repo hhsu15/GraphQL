@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {graphql} from 'react-apollo'
-import {getAuthorQuery} from '../queries/queries'
-
+import {getAuthorQuery, addBookMutation} from '../queries/queries'
+import compose from "lodash.flowright";
 
 class AddBook extends Component {
 	constructor(props){
@@ -13,7 +13,8 @@ class AddBook extends Component {
 		}
 	}
 	displayAuthor(){
-		var data = this.props.data
+		console.log(this.props)
+		var data = this.props.getAuthorQuery
 		if (data.loading) {
 			return(<option disabled>Loading authors..</option>)
 		} else {
@@ -26,7 +27,10 @@ class AddBook extends Component {
 
 	submitForm(e){
 		e.preventDefault(); //this is pure javascript code to prevent the default behavior of submit which refreshes the page
-		console.log(this.state) // since we bind this to the function
+		//console.log(this.state) // since we bind this to the function
+		
+		// and this is how you can invoke the mutation query
+		this.props.addBookMutation()
 	}
 
 	render() {
@@ -56,7 +60,12 @@ class AddBook extends Component {
 	}
 
 }
-  //method check if data is ready
-export default graphql(getAuthorQuery)(AddBook)
 
+//method check if data is ready
+//export default graphql(getAuthorQuery)(AddBook)
 
+// compose multiple queries using "compose"
+export default compose(
+	graphql(getAuthorQuery, {name:"getAuthorQuery"}), // the name property determines the name of the property you get back. i.e., this.props.getAuthorQuery
+	graphql(addBookMutation, {name:"addBookMutation"})
+)(AddBook)
