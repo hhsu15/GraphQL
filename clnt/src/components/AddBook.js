@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {graphql} from 'react-apollo'
-import {getAuthorQuery, addBookMutation} from '../queries/queries'
+import {getAuthorQuery, addBookMutation, getBookQuery} from '../queries/queries'
 import compose from "lodash.flowright";
 
 class AddBook extends Component {
@@ -30,7 +30,18 @@ class AddBook extends Component {
 		//console.log(this.state) // since we bind this to the function
 		
 		// and this is how you can invoke the mutation query
-		this.props.addBookMutation()
+		// with variables 
+		this.props.addBookMutation({
+			variables: {
+				name: this.state.name,
+				genre: this.state.genre,
+				authorId: this.state.authorId
+			},
+			// run getBookQuery after the mutation is done
+			refetchQueries:[
+				{query: getBookQuery}
+			]
+		})
 	}
 
 	render() {
